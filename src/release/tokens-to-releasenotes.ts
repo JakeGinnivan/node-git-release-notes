@@ -3,7 +3,7 @@ import generateChangeLogFromTokens, { ChangeLogItem } from './tokens-to-changelo
 
 export interface ReleaseNotesFormattingInfo {
     titleDepth: number
-    versionDepth: number
+    versionsDepth: number
 }
 
 export interface Version {
@@ -51,6 +51,10 @@ export default (tokens: Token[]) => {
 
     // Version numbers all need to be the same heading (but we should accept ## or ### or ####)
     const versionsDepth = token.depth
+    releaseNotes.formattingData = {
+        titleDepth: title.depth,
+        versionsDepth
+    }
     const groupedTokens = tokens.reduce((agg, v) => {
         if (v.type === 'heading' && v.depth === versionsDepth) {
             // Hit the next version, so start collecting tokens against it

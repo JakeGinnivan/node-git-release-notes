@@ -3,7 +3,7 @@ import { ChangeLogItem } from './tokens-to-changelog'
 
 const defaultFormattingInfo: ReleaseNotesFormattingInfo = {
     titleDepth: 1,
-    versionDepth: 2,
+    versionsDepth: 2,
 }
 
 const header = (text: string, depth: number) => `${'#'.repeat(depth)} ${text}`
@@ -15,7 +15,7 @@ const changes = (changes: ChangeLogItem[]) => {
 }
 const versions = (versions: Version[], formattingInfo: ReleaseNotesFormattingInfo) => {
     return versions.map(version => {
-        return `${header(version.version, formattingInfo.versionDepth)}
+        return `${header(version.version, formattingInfo.versionsDepth)}
 ${paragraph(version.summary)}${changes(version.changeLogs)}`
     }).join('\n\n')
 }

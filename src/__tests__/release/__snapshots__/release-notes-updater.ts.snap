@@ -1,5 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Supports different leveled headings with issues 1`] = `
+"## Changelog
+
+### v1.0.0
+ - A change"
+`;
+
 exports[`Supports having a changelog description 1`] = `
 "# Changelog
 This is a changelog

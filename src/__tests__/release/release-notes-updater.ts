@@ -30,3 +30,11 @@ it('Supports vnext with issues', () => {
 - A change`, 'v1.0.0'))
         .toMatchSnapshot()
 })
+
+it('Supports different leveled headings with issues', () => {
+    expect(releaseNotesUpdater(`## Changelog
+
+### vNext
+- A change`, 'v1.0.0'))
+        .toMatchSnapshot()
+})
