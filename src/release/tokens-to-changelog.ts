@@ -12,8 +12,6 @@ export default (tokens: Token[]): ChangeLogItem[] => {
     if (tokens[0].type !== 'list_start') throw 'Expecting list_start'
     if (tokens[tokens.length - 1].type !== 'list_end') throw 'Expecting list_end'
 
-console.log(tokens
-        .slice(1, tokens.length - 2))
     return tokens
         .slice(1, tokens.length - 2)
         .reduce((acc, token) => {

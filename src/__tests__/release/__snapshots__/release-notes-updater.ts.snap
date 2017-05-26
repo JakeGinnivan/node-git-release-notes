@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Supports having a changelog description 1`] = `
+"# Changelog
+This is a changelog
+
+## v1.0.0
+No changes
+"
+`;
+
+exports[`Supports having a empty vNext version 1`] = `
+"# Changelog
+
+## v1.0.0
+No changes
+"
+`;
+
+exports[`Supports just a top level title 1`] = `
+"# Changelog
+
+## v1.0.0
+No changes
+"
+`;
+
+exports[`Supports vnext with issues 1`] = `
+"# Changelog
+
+## v1.0.0
+ - A change"
+`;
