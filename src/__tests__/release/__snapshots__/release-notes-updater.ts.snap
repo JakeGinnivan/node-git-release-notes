@@ -1,7 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Can process multiple versions 1`] = `
+"# Changelog
+
+### v0.2.0
+ - A change
+
+### v0.1.0
+ - A change"
+`;
+
+exports[`Does not add release when no vnext entry and existing entires exist 1`] = `
+"# Changelog
+
+### v0.1.0
+ - A change"
+`;
+
 exports[`Supports different leveled headings with issues 1`] = `
 "## Changelog
+
+### v1.0.0
+ - A change"
+`;
+
+exports[`Supports different leveled headings with issues 2 1`] = `
+"# Changelog
 
 ### v1.0.0
  - A change"

@@ -38,3 +38,30 @@ it('Supports different leveled headings with issues', () => {
 - A change`, 'v1.0.0'))
         .toMatchSnapshot()
 })
+
+it('Supports different leveled headings with issues 2', () => {
+    expect(releaseNotesUpdater(`# Changelog
+
+### vNext
+- A change`, 'v1.0.0'))
+        .toMatchSnapshot()
+})
+
+it('Does not add release when no vnext entry and existing entires exist', () => {
+    expect(releaseNotesUpdater(`# Changelog
+
+### v0.1.0
+- A change`, 'v1.0.0'))
+        .toMatchSnapshot()
+})
+
+it('Can process multiple versions', () => {
+    expect(releaseNotesUpdater(`# Changelog
+
+### v0.2.0
+- A change
+
+### v0.1.0
+- A change`, 'v1.0.0'))
+        .toMatchSnapshot()
+})
