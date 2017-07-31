@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-require('./git-release-notes')
+require('./src/git-release-notes')
