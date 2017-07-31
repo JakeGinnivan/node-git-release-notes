@@ -1,5 +1,5 @@
 {
-  "name": "git-release-notes",
+  "name": "release-preparer",
   "version": "0.1.0",
   "author": "Jake Ginnivan <jake@ginnivan.net>",
   "license": "MIT",
@@ -7,6 +7,9 @@
   "bin": {
     "releaser": "./src/index.js"
   },
+    "publishConfig": {
+        "registry": "https://nexus.swmdigital.io/repository/js-private"
+    },
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
