@@ -1,6 +1,6 @@
 {
   "name": "release-preparer",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Jake Ginnivan <jake@ginnivan.net>",
   "license": "MIT",
   "main": "index.js",
