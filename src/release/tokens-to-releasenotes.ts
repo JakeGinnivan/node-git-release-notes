@@ -1,5 +1,6 @@
 import { Token } from './parse'
 import generateChangeLogFromTokens, { ChangeLogItem } from './tokens-to-changelog'
+import { Options } from './options'
 
 export interface ReleaseNotesFormattingInfo {
     titleDepth: number
@@ -20,7 +21,7 @@ export interface ReleaseNotes {
     formattingData?: ReleaseNotesFormattingInfo
 }
 
-export default (tokens: Token[]) => {
+export default (tokens: Token[], filename: string, options: Options) => {
     if (tokens.length === 0) {
         return
     }
@@ -28,6 +29,9 @@ export default (tokens: Token[]) => {
     const title = tokens.splice(0, 1)[0]
     if (title.type !== 'heading') {
         console.error('Expected first line to be a heading')
+        if (options.debug) {
+            console.log('AST:\n', JSON.stringify(tokens))
+        }
         return
     }
     const releaseNotes: ReleaseNotes = {
@@ -46,6 +50,9 @@ export default (tokens: Token[]) => {
     // Now we have title and summary parsed, next token should be a heading
     if (token.type !== 'heading') {
         console.error(`Expecting a heading for the version, found ${token.type}`)
+        if (options.debug) {
+            console.log('AST:\n', JSON.stringify(tokens))
+        }
         return
     }
 
@@ -82,7 +89,7 @@ export default (tokens: Token[]) => {
         return {
             version: v.version,
             summary,
-            changeLogs: generateChangeLogFromTokens(v.tokens)
+            changeLogs: generateChangeLogFromTokens(v.tokens, filename, v.version, options)
         }
     })
 

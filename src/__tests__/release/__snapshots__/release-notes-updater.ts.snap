@@ -1,5 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Can handle multiple levels of lists 1`] = `
+"# Changelog
+
+### v0.2.0
+ - A change
+   - Nested
+     - Nested 2
+
+### v0.1.0
+ - A change"
+`;
+
 exports[`Can process multiple versions 1`] = `
 "# Changelog
 
@@ -12,6 +24,18 @@ exports[`Can process multiple versions 1`] = `
 
 exports[`Does not add release when no vnext entry and existing entires exist 1`] = `
 "# Changelog
+
+### v0.1.0
+ - A change"
+`;
+
+exports[`Maintains blank lines 1`] = `
+"# Changelog
+
+### v0.2.0
+ - A change
+
+ - Another change
 
 ### v0.1.0
  - A change"

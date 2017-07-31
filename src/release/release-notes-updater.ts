@@ -1,11 +1,12 @@
 import parse, { Token } from './parse'
 import tokensToReleaseNotes from './tokens-to-releasenotes'
 import releaseNotesGenerator from './release-notes-generator'
+import { Options } from './options'
 
-export default (fileContents: string, version: string) => {
+export default (fileContents: string, version: string, filename: string, options?: Options) => {
     const tokens = parse(fileContents)
 
-    const releaseNotes = tokensToReleaseNotes(tokens)
+    const releaseNotes = tokensToReleaseNotes(tokens, filename, options || { debug: true })
     if (!releaseNotes) {
         throw 'No release notes to update'
     }

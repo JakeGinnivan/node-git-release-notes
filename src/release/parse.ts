@@ -8,7 +8,7 @@ interface ListEnd {
     type: 'list_end',
     ordered: boolean
 }
-interface ListItemStart { type: 'list_item_start' }
+interface ListItemStart { type: 'list_item_start' | 'loose_item_start' }
 interface ListItemEnd { type: 'list_item_end' }
 interface Paragraph {
     type: 'paragraph'
@@ -18,12 +18,16 @@ interface Text {
     type: 'text'
     text: string
 }
+interface Space {
+    type: 'space'
+    text: undefined
+}
 interface Heading {
     type: 'heading'
     depth: number
     text: string
 }
-export type Token = Heading | Paragraph | Text
+export type Token = Heading | Paragraph | Text | Space
     | ListStart | ListEnd
     | ListItemStart | ListItemEnd
     | { type: 'unknown' }
