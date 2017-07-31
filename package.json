@@ -13,16 +13,16 @@
     "test": "jest"
   },
   "devDependencies": {
+    "@types/commander": "^2.9.0",
+    "@types/fs-extra": "^3.0.2",
+    "@types/glob": "^5.0.30",
+    "@types/marked": "^0.0.28",
     "@types/jest": "^19.2.3",
     "jest": "^20.0.4",
     "ts-jest": "^20.0.4",
     "typescript": "^2.3.3"
   },
   "dependencies": {
-    "@types/commander": "^2.9.0",
-    "@types/fs-extra": "^3.0.2",
-    "@types/glob": "^5.0.30",
-    "@types/marked": "^0.0.28",
     "commander": "^2.9.0",
     "fs-extra": "^3.0.1",
     "glob": "^7.1.2",
