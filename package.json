@@ -7,9 +7,6 @@
   "bin": {
     "releaser": "./src/index.js"
   },
-    "publishConfig": {
-        "registry": "https://nexus.swmdigital.io/repository/js-private"
-    },
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
