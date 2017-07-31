@@ -1,6 +1,6 @@
 {
   "name": "git-release-notes",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "author": "Jake Ginnivan <jake@ginnivan.net>",
   "license": "MIT",
   "main": "index.js",
