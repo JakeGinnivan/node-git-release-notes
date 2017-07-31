@@ -44,14 +44,14 @@ exports[`Maintains blank lines 1`] = `
 exports[`Supports different leveled headings with issues 1`] = `
 "## Changelog
 
-### v1.0.0
+### [v1.0.0] - 31/7/2017
  - A change"
 `;
 
 exports[`Supports different leveled headings with issues 2 1`] = `
 "# Changelog
 
-### v1.0.0
+### [v1.0.0] - 31/7/2017
  - A change"
 `;
 
@@ -67,7 +67,7 @@ No changes
 exports[`Supports having a empty vNext version 1`] = `
 "# Changelog
 
-## v1.0.0
+## [v1.0.0] - 31/7/2017
 No changes
 "
 `;
@@ -83,6 +83,6 @@ No changes
 exports[`Supports vnext with issues 1`] = `
 "# Changelog
 
-## v1.0.0
+## [v1.0.0] - 31/7/2017
  - A change"
 `;

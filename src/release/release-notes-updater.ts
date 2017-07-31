@@ -20,7 +20,8 @@ export default (fileContents: string, version: string, filename: string, options
             summary: 'No changes'
         })
     } else if (newestVersion.version.toLowerCase() === 'vnext') {
-        newestVersion.version = version
+        const date = new Date()
+        newestVersion.version = `[${version}] - ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
         if (newestVersion.changeLogs.length === 0) {
             newestVersion.summary = 'No changes'
         }
