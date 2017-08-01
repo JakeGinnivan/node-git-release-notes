@@ -1,73 +1,79 @@
 import releaseNotesUpdater from '../../release/release-notes-updater'
 
+const verifyChangelog = (changelog: string, version = 'v1.0.0') => {
+    const output = releaseNotesUpdater(changelog, version, 'path/to/CHANGELOG.md')
+
+    return output.replace(/\d+\/\d+\/\d+/, '<date>')
+}
+
 it('Gives error on file', () => {
-    expect(() => releaseNotesUpdater('', 'v1.0.0', 'path/to/CHANGELOG.md'))
+    expect(() => verifyChangelog(''))
         .toThrow('No release notes to update')
 })
 
 it('Supports just a top level title', () => {
-    expect(releaseNotesUpdater('# Changelog', 'v1.0.0', 'path/to/CHANGELOG.md'))
+    expect(verifyChangelog('# Changelog'))
         .toMatchSnapshot()
 })
 
 it('Supports having a changelog description', () => {
-    expect(releaseNotesUpdater(`# Changelog
-This is a changelog`, 'v1.0.0', 'path/to/CHANGELOG.md'))
+    expect(verifyChangelog(`# Changelog
+This is a changelog`))
         .toMatchSnapshot()
 })
 
 it('Supports having a empty vNext version', () => {
-    expect(releaseNotesUpdater(`# Changelog
+    expect(verifyChangelog(`# Changelog
 
-## vNext`, 'v1.0.0', 'path/to/CHANGELOG.md'))
+## vNext`))
         .toMatchSnapshot()
 })
 
 it('Supports vnext with issues', () => {
-    expect(releaseNotesUpdater(`# Changelog
+    expect(verifyChangelog(`# Changelog
 
 ## vNext
-- A change`, 'v1.0.0', 'path/to/CHANGELOG.md'))
+- A change`))
         .toMatchSnapshot()
 })
 
 it('Supports different leveled headings with issues', () => {
-    expect(releaseNotesUpdater(`## Changelog
+    expect(verifyChangelog(`## Changelog
 
 ### vNext
-- A change`, 'v1.0.0', 'path/to/CHANGELOG.md'))
+- A change`))
         .toMatchSnapshot()
 })
 
 it('Supports different leveled headings with issues 2', () => {
-    expect(releaseNotesUpdater(`# Changelog
+    expect(verifyChangelog(`# Changelog
 
 ### vNext
-- A change`, 'v1.0.0', 'path/to/CHANGELOG.md'))
+- A change`))
         .toMatchSnapshot()
 })
 
 it('Does not add release when no vnext entry and existing entires exist', () => {
-    expect(releaseNotesUpdater(`# Changelog
+    expect(verifyChangelog(`# Changelog
 
 ### v0.1.0
-- A change`, 'v1.0.0', 'path/to/CHANGELOG.md'))
+- A change`))
         .toMatchSnapshot()
 })
 
 it('Can process multiple versions', () => {
-    expect(releaseNotesUpdater(`# Changelog
+    expect(verifyChangelog(`# Changelog
 
 ### v0.2.0
 - A change
 
 ### v0.1.0
-- A change`, 'v1.0.0', 'path/to/CHANGELOG.md'))
+- A change`))
         .toMatchSnapshot()
 })
 
 it('Can handle multiple levels of lists', () => {
-    expect(releaseNotesUpdater(`# Changelog
+    expect(verifyChangelog(`# Changelog
 
 ### v0.2.0
 - A change
@@ -75,12 +81,12 @@ it('Can handle multiple levels of lists', () => {
     * Nested 2
 
 ### v0.1.0
-- A change`, 'v1.0.0', 'path/to/CHANGELOG.md'))
+- A change`))
         .toMatchSnapshot()
 })
 
 it('Maintains blank lines', () => {
-    expect(releaseNotesUpdater(`# Changelog
+    expect(verifyChangelog(`# Changelog
 
 ### v0.2.0
 - A change
@@ -88,6 +94,29 @@ it('Maintains blank lines', () => {
 - Another change
 
 ### v0.1.0
-- A change`, 'v1.0.0', 'path/to/CHANGELOG.md'))
+- A change`))
+        .toMatchSnapshot()
+})
+
+it('Can start with multiple text blocks', () => {
+    expect(verifyChangelog(`# Changelog
+
+## vNext
+
+GPT ads are now lazy-loaded by default.
+Changed props:
+
+\`<GptAdSlot>\`
+* \`disabled\`: Set to true while content is still loading for slots that are likely to be below the fold after the content is loaded.
+
+Info
+
+SlotDefinition at \`<GptAdProvider>\` level
+* \`disableLazyLoading\`: Always load this slot independently of its viewport position
+
+Bit ol multiline
+
+description
+`, 'v2.0.0'))
         .toMatchSnapshot()
 })

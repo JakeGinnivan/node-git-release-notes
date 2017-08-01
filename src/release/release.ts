@@ -3,7 +3,9 @@ import releaseFile from './release-file'
 
 export default async (fileGlob: string, version: string, options: { debug: boolean }) => {
     const files = await glob(fileGlob, {
-        nocase: true
+        nocase: true,
+        debug: options.debug,
+        ignore: 'node_modules/**'
     })
 
     console.log('Processing: \n', files.join('\n'))

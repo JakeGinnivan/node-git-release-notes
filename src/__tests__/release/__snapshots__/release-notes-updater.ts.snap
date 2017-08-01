@@ -4,59 +4,84 @@ exports[`Can handle multiple levels of lists 1`] = `
 "# Changelog
 
 ### v0.2.0
- - A change
-   - Nested
-     - Nested 2
+- A change
+  - Nested
+    - Nested 2
 
 ### v0.1.0
- - A change"
+- A change"
 `;
 
 exports[`Can process multiple versions 1`] = `
 "# Changelog
 
 ### v0.2.0
- - A change
+- A change
 
 ### v0.1.0
- - A change"
+- A change"
+`;
+
+exports[`Can start with multiple text blocks 1`] = `
+"# Changelog
+
+## [v2.0.0] - <date>
+
+GPT ads are now lazy-loaded by default.
+Changed props:
+
+\`<GptAdSlot>\`
+- \`disabled\`: Set to true while content is still loading for slots that are likely to be below the fold after the content is loaded.
+
+Info
+
+SlotDefinition at \`<GptAdProvider>\` level
+
+- \`disableLazyLoading\`: Always load this slot independently of its viewport position
+
+Bit ol multiline
+
+description
+"
 `;
 
 exports[`Does not add release when no vnext entry and existing entires exist 1`] = `
 "# Changelog
 
 ### v0.1.0
- - A change"
+- A change"
 `;
 
 exports[`Maintains blank lines 1`] = `
 "# Changelog
 
 ### v0.2.0
- - A change
+- A change
 
- - Another change
+- Another change
+
 
 ### v0.1.0
- - A change"
+- A change"
 `;
 
 exports[`Supports different leveled headings with issues 1`] = `
 "## Changelog
 
-### [v1.0.0] - 31/7/2017
- - A change"
+### [v1.0.0] - <date>
+- A change"
 `;
 
 exports[`Supports different leveled headings with issues 2 1`] = `
 "# Changelog
 
-### [v1.0.0] - 31/7/2017
- - A change"
+### [v1.0.0] - <date>
+- A change"
 `;
 
 exports[`Supports having a changelog description 1`] = `
 "# Changelog
+
 This is a changelog
 
 ## v1.0.0
@@ -67,7 +92,7 @@ No changes
 exports[`Supports having a empty vNext version 1`] = `
 "# Changelog
 
-## [v1.0.0] - 31/7/2017
+## [v1.0.0] - <date>
 No changes
 "
 `;
@@ -83,6 +108,6 @@ No changes
 exports[`Supports vnext with issues 1`] = `
 "# Changelog
 
-## [v1.0.0] - 31/7/2017
- - A change"
+## [v1.0.0] - <date>
+- A change"
 `;

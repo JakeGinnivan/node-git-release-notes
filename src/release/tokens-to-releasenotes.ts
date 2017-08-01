@@ -28,7 +28,7 @@ export default (tokens: Token[], filename: string, options: Options) => {
 
     const title = tokens.splice(0, 1)[0]
     if (title.type !== 'heading') {
-        console.error('Expected first line to be a heading')
+        console.error(`Expected first line to be a heading in ${filename}`)
         if (options.debug) {
             console.log('AST:\n', JSON.stringify(tokens))
         }
@@ -41,15 +41,18 @@ export default (tokens: Token[], filename: string, options: Options) => {
     let token: Token | undefined
 
     token = tokens.shift(); if (!token) return releaseNotes
-    // Check to see if we have a changelog summary
-    if (token.type === 'paragraph') {
-        releaseNotes.summary = token.text
+    while (token.type === 'paragraph' || token.type === 'text' || token.type === 'space') {
+        const additionalLineBreak = token.type === 'paragraph' ? '\n' : ''
+        releaseNotes.summary = releaseNotes.summary
+            ? `${releaseNotes.summary}\n${additionalLineBreak}${token.text || ''}` 
+            : `${additionalLineBreak}${token.text}`
+
         token = tokens.shift(); if (!token) return releaseNotes
     }
 
     // Now we have title and summary parsed, next token should be a heading
     if (token.type !== 'heading') {
-        console.error(`Expecting a heading for the version, found ${token.type}`)
+        console.error(`Expecting a heading for the version, found ${token.type} in ${filename}`)
         if (options.debug) {
             console.log('AST:\n', JSON.stringify(tokens))
         }
@@ -77,13 +80,14 @@ export default (tokens: Token[], filename: string, options: Options) => {
     releaseNotes.versions = groupedTokens.map(v => {
         // Check to see if the first token is a paragraph, which would be a version summary
         let summary: string | undefined = undefined
-        if (v.tokens.length > 0) {
-            const peeked = v.tokens[0]
-            if (peeked.type === 'paragraph') {
-                v.tokens.shift()
-                // We have a version summary
-                summary = peeked.text
-            }
+        let peekedToken = v.tokens[0]
+        while (peekedToken && (peekedToken.type === 'paragraph' || peekedToken.type === 'text' || peekedToken.type === 'space')) {
+            const additionalLineBreak = peekedToken.type === 'paragraph' ? '\n' : ''
+            summary = summary
+                ? `${summary}\n${additionalLineBreak}${peekedToken.text || ''}` 
+                : `${additionalLineBreak}${peekedToken.text}`
+            v.tokens.shift()
+            peekedToken = v.tokens[0]
         }
 
         return {
