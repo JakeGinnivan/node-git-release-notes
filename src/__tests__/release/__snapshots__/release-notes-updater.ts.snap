@@ -1,5 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Can group change logs by type 1`] = `
+"# Changelog
+
+## [v2.0.0] - <date>
+## Fixes
+- Something
+- Something else
+
+## Features
+- New feature 1"
+`;
+
 exports[`Can handle multiple levels of lists 1`] = `
 "# Changelog
 

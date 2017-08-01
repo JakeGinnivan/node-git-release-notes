@@ -3,7 +3,10 @@ import { Options } from './options'
 
 export interface ChangeLogItem {
     description: string
-    type: 'list-item' | 'text' | 'paragraph'
+    kind: 'list-item' | 'text' | 'paragraph'
+    /** For example feature, fix etc */
+    group: string | undefined
+    prefix: string | undefined
     children?: ChangeLogItem[]
 }
 
@@ -13,16 +16,17 @@ export interface ChangeLogAccumulator {
 }
 
 export default (tokens: Token[], filename: string, version: string, options: Options): ChangeLogItem[] => {
-    const changeLogItems: ChangeLogItem[] = []
-    // Check our first item is a list_start and last is list_end
-    if (tokens.length === 0) return changeLogItems
-
     let parents: ChangeLogAccumulator[] = []
     let isLooseListItem = false
     let isInList = false
+    let currentGroup: string | undefined
 
     return tokens
         .reduce((acc, token) => {
+            if (token.type === 'heading') {
+                currentGroup = token.text
+            }
+
             if (token.type === 'list_start') {
                 // We are at the top level
                 if (!isInList) {
@@ -53,7 +57,9 @@ export default (tokens: Token[], filename: string, version: string, options: Opt
                 isLooseListItem = token.type === 'loose_item_start'
                 acc.items.push({
                     description: '',
-                    type: 'list-item'
+                    kind: 'list-item',
+                    group: currentGroup,
+                    prefix: undefined
                 })
                 acc.lastToken = 'list_item_start'
             }
@@ -61,13 +67,24 @@ export default (tokens: Token[], filename: string, version: string, options: Opt
             if (token.type === 'text' || token.type === 'paragraph' || token.type === 'space') {
                 if (isInList) {
                     const lastItem = acc.items[acc.items.length - 1]
+                    // Try to workout prefix if there is nothing in the list
+                    if (lastItem.description === '' && token.text) {
+                        const split = token.text.split(': ')
+                        if (split.length > 1) {
+                            lastItem.prefix = split[0]
+                            token.text = split.slice(1).join(':')
+                        }
+                    }
+
                     lastItem.description += (lastItem.description ? '\n' : '') + (token.text || '')
                     return acc
                 }
                 acc.lastToken = token.type
                 acc.items.push({
                     description: token.text || '',
-                    type: token.type === 'paragraph' ? 'paragraph' : 'text'
+                    kind: token.type === 'paragraph' ? 'paragraph' : 'text',
+                    group: currentGroup,
+                    prefix: undefined
                 })
             }
 

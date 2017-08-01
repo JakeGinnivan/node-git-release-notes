@@ -120,3 +120,17 @@ description
 `, 'v2.0.0'))
         .toMatchSnapshot()
 })
+
+it('Can group change logs by type', () => {
+    expect(verifyChangelog(`# Changelog
+
+## vNext
+### Fixes
+- Something
+- Something else
+
+### Features
+- New feature 1
+`, 'v2.0.0'))
+        .toMatchSnapshot()
+})
