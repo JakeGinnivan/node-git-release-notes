@@ -3,7 +3,7 @@ import releaseNotesUpdater from '../../release/release-notes-updater'
 const verifyChangelog = (changelog: string, version = 'v1.0.0') => {
     const output = releaseNotesUpdater(changelog, version, 'path/to/CHANGELOG.md')
 
-    return output.replace(/\d+\/\d+\/\d+/, '<date>')
+    return output.newReleaseNotesFile.replace(/\d+\/\d+\/\d+/, '<date>')
 }
 
 it('Gives error on file', () => {

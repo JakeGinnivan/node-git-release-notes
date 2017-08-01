@@ -27,5 +27,8 @@ export default (fileContents: string, version: string, filename: string, options
         }
     }
 
-    return releaseNotesGenerator(releaseNotes)
+    return {
+        newReleaseNotesFile: releaseNotesGenerator(releaseNotes),
+        currentVersion: newestVersion
+    }
 }

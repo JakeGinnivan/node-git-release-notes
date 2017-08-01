@@ -15,10 +15,12 @@ program
     .option('--aggregate', 'Aggregates changelogs in folders into the main one')
     .action((version: string, options: Options) => {
         release(options.file || '**/CHANGELOG.md', version, {
-            debug: !!options.debug
+            debug: !!options.debug,
+            aggregate: !!options.aggregate,
         })
             .catch(err => {
                 console.error(err)
+                process.exit(1)
             })
     })
 
