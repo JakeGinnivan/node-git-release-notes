@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`parses single version properly 1`] = `
+Object {
+  "formattingData": Object {
+    "titleDepth": 1,
+    "versionsDepth": 2,
+  },
+  "title": "Changelog",
+  "versions": Array [
+    Object {
+      "changeLogs": Array [
+        Object {
+          "description": "List 1",
+          "group": undefined,
+          "kind": "list-item",
+          "prefix": undefined,
+        },
+        Object {
+          "description": "List 2",
+          "group": undefined,
+          "kind": "list-item",
+          "prefix": undefined,
+        },
+      ],
+      "summary": undefined,
+      "version": "v2.0.0",
+    },
+  ],
+}
+`;

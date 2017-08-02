@@ -1,98 +1,92 @@
 import * as fs from 'fs-extra'
 import glob from '../utils/glob'
-import parse, { Token } from './parse'
-import releaseFile from './release-file'
-import tokensToReleaseNotes from './tokens-to-releasenotes'
-import { ChangeLogItem } from './tokens-to-changelog'
-import releaseNotesGenerator from './release-notes-generator'
+import { ReadOptions, fromMarkdown } from '../release-notes/read'
+import { updateRelease } from './update-release'
+import { toMarkdown } from '../release-notes/write'
+import { ReleaseNotes } from '../release-notes/model'
 
-export default async (fileGlob: string, version: string, options: { debug: boolean, aggregate: boolean }) => {
+export type ReleaseOptions = ReadOptions & {
+    aggregate: boolean,
+}
+
+export const release = async (fileGlob: string, version: string, options: ReleaseOptions) => {
     const files = await glob(fileGlob, {
         nocase: true,
         debug: options.debug,
-        ignore: 'node_modules/**'
+        ignore: 'node_modules/**',
     })
 
-    console.log('Processing: \n', files.join('\n'))
+    const changelogFiles = await Promise.all(files.map<Promise<ChangeLogFile>>(async file => ({
+        filename: file,
+        releaseNotes: (await fs.readFile(file)).toString(),
+    })))
 
-    const updates = await Promise.all(files.map(async file => {
-        try {
-            const updatedVersion = await releaseFile(file, version, options)
-            return {
-                success: true as true,
-                file,
-                versionInfo: updatedVersion,
-            }
-        } catch (err) {
-            console.error(err)
-            return {
-                success: false as false,
-                file,
-                error: err
-            }
+    const processedFiles = processFiles(changelogFiles, version, options)
+
+    for (const processed of processedFiles) {
+        await fs.writeFile(processed.filename, processed.releaseNotes)
+    }
+}
+
+export type ChangeLogFile = {
+    filename: string,
+    releaseNotes: string,
+}
+
+export const processFiles = (
+    files: ChangeLogFile[], version: string, options: ReleaseOptions,
+) => {
+    // tslint:disable-next-line:no-console
+    console.log('Processing: \n', files.map(f => f.filename).join('\n'))
+    const releaseNotesFiles = files.map(file => {
+        const releaseNotes = fromMarkdown(file.releaseNotes, file.filename, options)
+
+        return {
+            filename: file.filename,
+            releaseNotes,
         }
-    }))
+    })
 
+    const rootFiles = releaseNotesFiles.filter(update => update.filename.indexOf('/') === -1)
+    const rootFile = rootFiles[0]
     if (options.aggregate) {
-        const rootFiles = updates.filter(update => update.file.indexOf('/') === -1)
-        if (rootFiles.length === 0) {
-            throw 'Cannot file root changelog'
-        }
-        const rootFile = rootFiles[0]
-        const fileContents = await fs.readFile(rootFile.file)
-        const tokens = parse(fileContents.toString())
-        const releaseNotes = tokensToReleaseNotes(tokens, rootFile.file, options || { debug: true })
-        if (!releaseNotes) {
-            throw 'Can\'t read root changelog'
+        if (!rootFile) {
+            // tslint:disable-next-line:no-string-throw
+            throw 'Cannot find root changelog'
         }
 
-        console.log(`Aggregating release notes for ${version} to main changelog file: ${rootFile}`)
-        const allUpdates = await Promise.all(updates
-            .filter(update => (
-                update.file.indexOf('/') != -1 // Not root file
-                && update.success
-                && update.versionInfo
-            ))
-            .map(async update => {
-                const fileContents = await fs.readFile(update.file)
-                const tokens = parse(fileContents.toString())
-                const releaseNotes = tokensToReleaseNotes(tokens, update.file, options || { debug: true })
-                if (!releaseNotes) {
-                    return
-                }
+        // Remove the root file, we will update after
+        const rootFileIndex = releaseNotesFiles.indexOf(rootFile)
+        releaseNotesFiles.splice(rootFileIndex, 1)
+    }
 
-                return {
-                    file: update.file,
-                    releaseNotes: releaseNotes.versions[0]
-                }
+    for (const releaseFile of releaseNotesFiles) {
+        const updateResult = updateRelease(releaseFile.releaseNotes, version)
+
+        if (updateResult && rootFile) {
+            const rootVersionToUpdate = rootFile.releaseNotes.versions[0]
+            rootVersionToUpdate.changeLogs.forEach(changeLogItem => {
+                const pathSections = releaseFile.filename.split('/')
+                // Take the folder of the changelog, group the changelog items under that
+                changeLogItem.group = pathSections[pathSections.length - 2]
+                rootVersionToUpdate.changeLogs.push(changeLogItem)
+            })
+        }
+    }
+
+    const results: ChangeLogFile[] = releaseNotesFiles
+            .map(file => ({
+                filename: file.filename,
+                releaseNotes: toMarkdown(file.releaseNotes),
             }))
 
-        const flatUpdates = allUpdates
-            .reduce((acc, val) => {
-                if (val) {
-                    val.releaseNotes.changeLogs.forEach(logEntry => {
-                        logEntry.group = val.file
-                        acc.push(logEntry)
-                    })
-                }
-
-                return acc
-            }, [] as ChangeLogItem[])
-
-        if (releaseNotes.versions[0].version.indexOf(version) === -1) {
-            const date = new Date()
-            const releaseDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
-            // Can't fild the version.. lets create it
-            releaseNotes.versions.unshift({
-                version: `[${version}] - `,
-                changeLogs: flatUpdates,
-                releaseDate,
-            })
-        } else {
-            releaseNotes.versions[0].changeLogs.push(...flatUpdates)
-        }
-
-        const newRootReleasNotes = releaseNotesGenerator(releaseNotes)
-        await fs.writeFile(rootFile.file, newRootReleasNotes)
+    if (options.aggregate) {
+        // We have to write root
+        results.push({
+            filename: rootFile.filename,
+            releaseNotes: toMarkdown(rootFile.releaseNotes),
+        })
     }
+
+    return results
 }

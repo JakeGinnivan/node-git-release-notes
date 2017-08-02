@@ -1,5 +1,5 @@
 import * as program from 'commander'
-import release from './release/release'
+import { release } from './release/release'
 
 interface Options {
     file: string
@@ -18,10 +18,10 @@ program
             debug: !!options.debug,
             aggregate: !!options.aggregate,
         })
-            .catch(err => {
-                console.error(err)
-                process.exit(1)
-            })
+        .catch((err: string) => {
+            console.error('Error occured: ' + err)
+            process.exit(1)
+        })
     })
 
 program.parse(process.argv)

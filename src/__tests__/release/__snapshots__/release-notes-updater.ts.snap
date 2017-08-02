@@ -15,22 +15,22 @@ exports[`Can group change logs by type 1`] = `
 exports[`Can handle multiple levels of lists 1`] = `
 "# Changelog
 
-### v0.2.0
+### [v0.2.0]
 - A change
   - Nested
     - Nested 2
 
-### v0.1.0
+### [v0.1.0]
 - A change"
 `;
 
 exports[`Can process multiple versions 1`] = `
 "# Changelog
 
-### v0.2.0
+### [v0.2.0]
 - A change
 
-### v0.1.0
+### [v0.1.0]
 - A change"
 `;
 
@@ -43,7 +43,7 @@ GPT ads are now lazy-loaded by default.
 Changed props:
 
 \`<GptAdSlot>\`
-- \`disabled\`: Set to true while content is still loading for slots that are likely to be below the fold after the content is loaded.
+- \`disabled\`: Set to asdasdasdsad....
 
 Info
 
@@ -60,20 +60,20 @@ description
 exports[`Does not add release when no vnext entry and existing entires exist 1`] = `
 "# Changelog
 
-### v0.1.0
+### [v0.1.0]
 - A change"
 `;
 
 exports[`Maintains blank lines 1`] = `
 "# Changelog
 
-### v0.2.0
+### [v0.2.0]
 - A change
 
 - Another change
 
 
-### v0.1.0
+### [v0.1.0]
 - A change"
 `;
 
@@ -96,7 +96,7 @@ exports[`Supports having a changelog description 1`] = `
 
 This is a changelog
 
-## v1.0.0
+## [v1.0.0]
 No changes
 "
 `;
@@ -112,7 +112,7 @@ No changes
 exports[`Supports just a top level title 1`] = `
 "# Changelog
 
-## v1.0.0
+## [v1.0.0]
 No changes
 "
 `;

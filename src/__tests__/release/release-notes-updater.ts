@@ -1,9 +1,12 @@
-import releaseNotesUpdater from '../../release/release-notes-updater'
+import { processFiles } from '../../release/release'
 
 const verifyChangelog = (changelog: string, version = 'v1.0.0') => {
-    const output = releaseNotesUpdater(changelog, version, 'path/to/CHANGELOG.md')
+    const output = processFiles([{
+        filename: 'path/to/CHANGELOG.md',
+        releaseNotes: changelog,
+    }], version, { debug: true, aggregate: false })
 
-    return output.newReleaseNotesFile.replace(/\d+\/\d+\/\d+/, '<date>')
+    return output[0].releaseNotes.replace(/\d+\/\d+\/\d+/, '<date>')
 }
 
 it('Gives error on file', () => {
@@ -107,7 +110,7 @@ GPT ads are now lazy-loaded by default.
 Changed props:
 
 \`<GptAdSlot>\`
-* \`disabled\`: Set to true while content is still loading for slots that are likely to be below the fold after the content is loaded.
+* \`disabled\`: Set to asdasdasdsad....
 
 Info
 

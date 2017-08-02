@@ -1,5 +1,5 @@
-import { ReleaseNotes, ReleaseNotesFormattingInfo, Version } from './tokens-to-releasenotes'
-import { ChangeLogItem } from './tokens-to-changelog'
+import * as fs from 'fs-extra'
+import { ReleaseNotesFormattingInfo, ChangeLogItem, ReleaseNotes, Version } from './model'
 
 const defaultFormattingInfo: ReleaseNotesFormattingInfo = {
     titleDepth: 1,
@@ -22,28 +22,33 @@ const formatDescription = (prefix: string | undefined, description: string, inde
     return formattedListItem
 }
 
-const header = (text: string, depth: number) => `${'#'.repeat(depth)} ${text}`
+const formatHeader = (
+    text: string, releaseDate: string | undefined, depth: number, link: boolean,
+) => `${'#'.repeat(depth)} ${link ? `[${text}]` : text}${releaseDate ? ` - ${releaseDate}` : ''}`
+
 const paragraph = (text: string | undefined) => !text ? '' : text + '\n'
-const changes = (items: ChangeLogItem[], formattingInfo: ReleaseNotesFormattingInfo, pad: number = 0): string => {
+const formatChanges = (
+    items: ChangeLogItem[], formattingInfo: ReleaseNotesFormattingInfo, pad: number = 0,
+): string => {
     type Grouped = { [group: string]: ChangeLogItem[] }
     const grouped = items
-        .reduce((grouped, item) => {
-            let group = grouped[item.group || '']
+        .reduce<Grouped>((acc, item) => {
+            let group = acc[item.group || '']
             if (!group) {
                 group = []
-                grouped[item.group || ''] = group
+                acc[item.group || ''] = group
             }
 
             group.push(item)
-            return grouped
-        }, {} as Grouped)
+            return acc
+        }, {})
 
     return Object.keys(grouped)
         .map(group => {
             const formattedGroup = grouped[group]
                 .map(change => {
                     const nested = change.children
-                        ? '\n' + changes(change.children, formattingInfo, pad + 2)
+                        ? '\n' + formatChanges(change.children, formattingInfo, pad + 2)
                         : ''
                     let formattedItem = padLeft(
                         `${change.kind === 'list-item'
@@ -51,7 +56,6 @@ const changes = (items: ChangeLogItem[], formattingInfo: ReleaseNotesFormattingI
                             : change.description
                         }${nested}`,
                         pad)
-                        
                     if (change.kind === 'paragraph') {
                         formattedItem += '\n'
                     }
@@ -60,23 +64,24 @@ const changes = (items: ChangeLogItem[], formattingInfo: ReleaseNotesFormattingI
                 .join('\n')
 
             if (group) {
-                return `${new Array(formattingInfo.versionsDepth + 1).join('#')} ${group}\n${formattedGroup}`
+                const headerMd = new Array(formattingInfo.versionsDepth + 1).join('#')
+                return `${headerMd} ${group}\n${formattedGroup}`
             }
             return formattedGroup
         })
         .join('\n')
 }
-const versions = (versions: Version[], formattingInfo: ReleaseNotesFormattingInfo) => {
-    return versions.map(version => {
-        return `${header(version.version, formattingInfo.versionsDepth)}
-${paragraph(version.summary)}${changes(version.changeLogs, formattingInfo)}`
-    }).join('\n')
+const formatVersions = (versions: Version[], formattingInfo: ReleaseNotesFormattingInfo) => {
+    return versions.map(version => (
+        `${formatHeader(version.version, version.releaseDate, formattingInfo.versionsDepth, true)}
+${paragraph(version.summary)}${formatChanges(version.changeLogs, formattingInfo)}`
+    )).join('\n')
 }
 
-export default (releaseNotes: ReleaseNotes) => {
+export const toMarkdown = (releaseNotes: ReleaseNotes) => {
     const formattingInfo = releaseNotes.formattingData || defaultFormattingInfo
 
-    return `${header(releaseNotes.title, formattingInfo.titleDepth)}
+    return `${formatHeader(releaseNotes.title, undefined, formattingInfo.titleDepth, false)}
 ${paragraph(releaseNotes.summary)}
-${versions(releaseNotes.versions, formattingInfo)}`
+${formatVersions(releaseNotes.versions, formattingInfo)}`
 }
