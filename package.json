@@ -1,14 +1,11 @@
 {
   "name": "release-preparer",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": "Jake Ginnivan <jake@ginnivan.net>",
   "license": "MIT",
   "main": "index.js",
   "bin": {
     "release-preparer": "./src/index.js"
-  },
-  "publishConfig": {
-    "registry": "https://nexus.swmdigital.io/repository/js-private"
   },
   "scripts": {
     "build": "tsc",
