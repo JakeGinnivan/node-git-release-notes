@@ -64,7 +64,7 @@ const formatChanges = (
                 .join('\n')
 
             if (group) {
-                const headerMd = new Array(formattingInfo.versionsDepth + 1).join('#')
+                const headerMd = '#'.repeat(formattingInfo.versionsDepth + 1)
                 return `${headerMd} ${group}\n${formattedGroup}\n`
             }
             return formattedGroup
