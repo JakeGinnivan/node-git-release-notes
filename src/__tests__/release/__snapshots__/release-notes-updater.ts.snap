@@ -24,6 +24,18 @@ exports[`Can handle multiple levels of lists 1`] = `
 - A change"
 `;
 
+exports[`Can parse already parsed doc 1`] = `
+"# Changelog
+
+## [1.0.0]
+## Fixes
+- Something
+- Something else
+
+## Features
+- New feature 1"
+`;
+
 exports[`Can process multiple versions 1`] = `
 "# Changelog
 

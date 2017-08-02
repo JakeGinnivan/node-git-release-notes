@@ -23,6 +23,7 @@ Object {
           "prefix": undefined,
         },
       ],
+      "releaseDate": undefined,
       "summary": undefined,
       "version": "v2.0.0",
     },

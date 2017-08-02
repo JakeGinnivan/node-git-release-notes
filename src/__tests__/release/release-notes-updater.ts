@@ -137,3 +137,17 @@ it('Can group change logs by type', () => {
 `, 'v2.0.0'))
         .toMatchSnapshot()
 })
+
+it('Can parse already parsed doc', () => {
+    expect(verifyChangelog(`# Changelog
+
+## [1.0.0]
+### Fixes
+- Something
+- Something else
+
+### Features
+- New feature 1
+`, 'v2.0.0'))
+        .toMatchSnapshot()
+})

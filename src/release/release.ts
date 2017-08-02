@@ -32,20 +32,30 @@ export type ChangeLogFile = {
     filename: string,
     releaseNotes: string,
 }
-
+function notUndefined<T>(val: T | undefined): val is T { return val !== undefined }
 export const processFiles = (
     files: ChangeLogFile[], version: string, options: ReleaseOptions,
 ) => {
     // tslint:disable-next-line:no-console
     console.log('Processing: \n', files.map(f => f.filename).join('\n'))
+    const errors: string[] = []
     const releaseNotesFiles = files.map(file => {
-        const releaseNotes = fromMarkdown(file.releaseNotes, file.filename, options)
+        try {
+            const releaseNotes = fromMarkdown(file.releaseNotes, file.filename, options)
 
-        return {
-            filename: file.filename,
-            releaseNotes,
+            return {
+                filename: file.filename,
+                releaseNotes,
+            }
+        } catch (err) {
+            errors.push(err)
+            return
         }
     })
+    .filter(notUndefined)
+    if (errors.length > 0) {
+        throw errors.join('\n')
+    }
 
     const rootFiles = releaseNotesFiles.filter(update => update.filename.indexOf('/') === -1)
     const rootFile = rootFiles[0]
@@ -65,11 +75,13 @@ export const processFiles = (
 
         if (updateResult && rootFile) {
             const rootVersionToUpdate = rootFile.releaseNotes.versions[0]
-            rootVersionToUpdate.changeLogs.forEach(changeLogItem => {
+            updateResult.changeLogs.forEach(changeLogItem => {
                 const pathSections = releaseFile.filename.split('/')
                 // Take the folder of the changelog, group the changelog items under that
-                changeLogItem.group = pathSections[pathSections.length - 2]
-                rootVersionToUpdate.changeLogs.push(changeLogItem)
+                rootVersionToUpdate.changeLogs.push({
+                    ...changeLogItem,
+                    group: pathSections[pathSections.length - 2],
+                })
             })
         }
     }

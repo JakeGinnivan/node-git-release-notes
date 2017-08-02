@@ -65,7 +65,7 @@ const formatChanges = (
 
             if (group) {
                 const headerMd = new Array(formattingInfo.versionsDepth + 1).join('#')
-                return `${headerMd} ${group}\n${formattedGroup}`
+                return `${headerMd} ${group}\n${formattedGroup}\n`
             }
             return formattedGroup
         })

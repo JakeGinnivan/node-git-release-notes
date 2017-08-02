@@ -16,6 +16,15 @@ export const fromMarkdown = (
     return tokensToReleaseNotes(tokens, filename, options || { debug: true })
 }
 
+const parseHeader = (header: string) => {
+    const match = /\[?(.*?)\]?(?: - (\d+\/\d+\/\d+))?$/.exec(header)
+    if (!match) { return { version: header, releaseDate: undefined } }
+    return {
+        version: match[1],
+        releaseDate: match[2],
+    }
+}
+
 const tokensToReleaseNotes = (tokens: Token[], filename: string, options: ReadOptions) => {
     const title = tokens.splice(0, 1)[0]
     if (title.type !== 'heading') {
@@ -58,17 +67,19 @@ const tokensToReleaseNotes = (tokens: Token[], filename: string, options: ReadOp
         titleDepth: title.depth,
         versionsDepth,
     }
+    let header = parseHeader(token.text)
     const groupedTokens = tokens.reduce((agg, v) => {
         if (v.type === 'heading' && v.depth === versionsDepth) {
+            header = parseHeader(v.text)
             // Hit the next version, so start collecting tokens against it
-            agg.push({ version: v.text, tokens: [] })
+            agg.push({ version: header.version, releaseDate: header.releaseDate, tokens: [] })
         } else {
             // Add the token to the last version
             agg[agg.length - 1].tokens.push(v)
         }
 
         return agg
-    }, [{ version: token.text, tokens: [] as Token[] }])
+    }, [{ version: header.version, releaseDate: header.releaseDate, tokens: [] as Token[] }])
 
     releaseNotes.versions = groupedTokens.map(v => {
         // Check to see if the first token is a paragraph, which would be a version summary
@@ -90,6 +101,7 @@ const tokensToReleaseNotes = (tokens: Token[], filename: string, options: ReadOp
 
         return {
             version: v.version,
+            releaseDate: v.releaseDate,
             summary,
             changeLogs: parseChangeLogVersion(v.tokens, filename, v.version, options),
         }

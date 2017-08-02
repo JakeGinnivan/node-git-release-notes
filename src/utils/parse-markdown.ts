@@ -32,4 +32,5 @@ export type Token = Heading | Paragraph | Text | Space
     | ListItemStart | ListItemEnd
     | { type: 'unknown' }
 
-export default (fileContents: string) => marked.lexer(fileContents.toString()) as (Token[] & { links: {} })
+export default (fileContents: string) =>
+    marked.lexer(fileContents.toString()) as (Token[] & { links: {} })
