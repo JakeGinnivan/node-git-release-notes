@@ -1,5 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Can get changes after a version 1`] = `
+"- Change 1
+- Change 2
+  - Change 2.1
+
+- Change 3
+- Change 4
+"
+`;
+
+exports[`Can get changes before a version 1`] = `
+"- Change 0
+- Change 1
+- Change 2
+  - Change 2.1
+"
+`;
+
+exports[`Can get changes between versions 1`] = `
+"- Change 1
+- Change 2
+  - Change 2.1
+
+- Fix 1
+"
+`;
+
 exports[`Can get changes for a single version 1`] = `
 "- Change 1
 - Change 2

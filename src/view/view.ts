@@ -2,6 +2,7 @@ import * as fs from 'fs-extra'
 import glob from '../utils/glob'
 import { fromMarkdown } from '../release-notes/read'
 import { formatVersionChanges, defaultFormattingInfo } from '../release-notes/write'
+import { ChangeLogItem } from '../release-notes/model'
 
 export const view = async (fileGlob: string, versionSpec: string) => {
     const files = await glob(fileGlob, {
@@ -36,4 +37,44 @@ export const extractChanges = (filename: string, changelog: string, versionSpec:
             releaseNotes.formattingData || defaultFormattingInfo,
         )
     }
+
+    if (parts.length === 2) {
+        // We have a range, is it open ended?
+        const range = {
+            from: parts[0],
+            to: parts[1],
+        }
+
+        let toFound = false
+        let fromFound = false
+
+        type Acc = {
+            changes: ChangeLogItem[],
+            summaries: string[],
+        }
+        const allChanges = releaseNotes.versions.reduceRight<Acc>((acc, val) => {
+            if (range.to && val.version.includes(range.to)) {
+                toFound = true
+            }
+            if (!range.from || val.version.includes(range.from)) {
+                fromFound = true
+            }
+
+            if (fromFound && !toFound) {
+                acc.changes.push(...val.changeLogs)
+                if (val.summary) { acc.summaries.push(val.summary) }
+            }
+
+            return acc
+        }, { changes: [], summaries: [] })
+
+        return formatVersionChanges(
+            allChanges.summaries.join('\n'),
+            allChanges.changes,
+            releaseNotes.formattingData || defaultFormattingInfo,
+        )
+    }
+
+    // tslint:disable-next-line:no-string-throw
+    throw 'Spec is not valid, should be in format <version> or [<fromversion>]...[<toversion>]'
 }
