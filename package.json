@@ -1,14 +1,16 @@
 {
   "name": "release-preparer",
-  "version": "0.2.1",
+  "version": "0.2.4",
   "author": "Jake Ginnivan <jake@ginnivan.net>",
   "license": "MIT",
-  "main": "index.js",
   "bin": {
-    "release-preparer": "./src/index.js"
+    "release-preparer": "index.js"
+  },
+  "publishConfig": {
+    "registry": "https://nexus.swmdigital.io/repository/js-private"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && rollup src/git-release-notes.js --format cjs --output dist/release-preparer.js --environment INCLUDE_DEPS,BUILD:production",
     "watch": "tsc -w",
     "test": "jest"
   },
@@ -18,19 +20,18 @@
     "@types/glob": "^5.0.30",
     "@types/jest": "^19.2.3",
     "@types/marked": "^0.0.28",
-    "jest": "^20.0.4",
-    "ts-jest": "^20.0.4",
-    "typescript": "^2.4.2",
-    "tslint": "^5.5.0"
-  },
-  "dependencies": {
     "@types/pino": "^3.0.1",
     "commander": "^2.9.0",
     "fs-extra": "^3.0.1",
     "glob": "^7.1.2",
+    "jest": "^20.0.4",
     "marked": "^0.3.6",
-    "pino": "^4.7.1"
+    "pino": "^4.7.1",
+    "ts-jest": "^20.0.4",
+    "tslint": "^5.5.0",
+    "typescript": "^2.4.2"
   },
+  "dependencies": {},
   "jest": {
     "transform": {
       ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"

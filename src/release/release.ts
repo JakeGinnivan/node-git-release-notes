@@ -68,6 +68,13 @@ export const processFiles = (
         // Remove the root file, we will update after
         const rootFileIndex = releaseNotesFiles.indexOf(rootFile)
         releaseNotesFiles.splice(rootFileIndex, 1)
+        const vNext = rootFile.releaseNotes.versions[0]
+        if (vNext.version.toLowerCase() !== 'vnext') {
+            rootFile.releaseNotes.versions.unshift({
+                version: 'vNext',
+                changeLogs: [],
+            })
+        }
     }
 
     for (const releaseFile of releaseNotesFiles) {
@@ -93,6 +100,7 @@ export const processFiles = (
             }))
 
     if (options.aggregate) {
+        updateRelease(rootFile.releaseNotes, version)
         // We have to write root
         results.push({
             filename: rootFile.filename,
