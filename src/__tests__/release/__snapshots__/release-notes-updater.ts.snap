@@ -4,12 +4,14 @@ exports[`Can group change logs by type 1`] = `
 "# Changelog
 
 ## [v2.0.0] - <date>
-## Fixes
+### Fixes
 - Something
 - Something else
 
-## Features
-- New feature 1"
+
+### Features
+- New feature 1
+"
 `;
 
 exports[`Can handle multiple levels of lists 1`] = `
@@ -28,12 +30,14 @@ exports[`Can parse already parsed doc 1`] = `
 "# Changelog
 
 ## [1.0.0]
-## Fixes
+### Fixes
 - Something
 - Something else
 
-## Features
-- New feature 1"
+
+### Features
+- New feature 1
+"
 `;
 
 exports[`Can process multiple versions 1`] = `
