@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Can get changes for a single version 1`] = `
+"- Change 1
+- Change 2
+  - Change 2.1
+"
+`;

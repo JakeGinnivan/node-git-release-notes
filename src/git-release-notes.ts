@@ -1,10 +1,15 @@
 import * as program from 'commander'
 import { release } from './release/release'
+import { view } from './view/view'
 
-interface Options {
+interface ReleaseOptions {
     file: string
     debug: string
     aggregate: string
+}
+
+interface ViewOptions {
+    file: string
 }
 
 program
@@ -13,11 +18,24 @@ program
     .option('-f, --file <file>', 'The release notes files to update, supports globs')
     .option('--debug', 'Debug flag to get more information')
     .option('--aggregate', 'Aggregates changelogs in folders into the main one')
-    .action((version: string, options: Options) => {
+    .action((version: string, options: ReleaseOptions) => {
         release(options.file || '**/CHANGELOG.md', version, {
             debug: !!options.debug,
             aggregate: !!options.aggregate,
         })
+        .catch((err: string) => {
+            console.error('Error occured: ' + err)
+            process.exit(1)
+        })
+    })
+
+program
+    .command('view <version spec>')
+    // tslint:disable-next-line:max-line-length
+    .description('Prints the changes for a version or a range, ie <version>...<version> or ...<version> or <version>...')
+    .option('-f, --file <file>', 'The release notes file to read from, default CHANGELOG.md')
+    .action((versionSpec: string, options: ViewOptions) => {
+        view(options.file || 'CHANGELOG.md', versionSpec)
         .catch((err: string) => {
             console.error('Error occured: ' + err)
             process.exit(1)

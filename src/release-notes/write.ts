@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra'
 import { ReleaseNotesFormattingInfo, ChangeLogItem, ReleaseNotes, Version } from './model'
 
-const defaultFormattingInfo: ReleaseNotesFormattingInfo = {
+export const defaultFormattingInfo: ReleaseNotesFormattingInfo = {
     titleDepth: 1,
     versionsDepth: 2,
 }
@@ -27,8 +27,12 @@ const formatHeader = (
 ) => `${'#'.repeat(depth)} ${link ? `[${text}]` : text}${releaseDate ? ` - ${releaseDate}` : ''}`
 
 const paragraph = (text: string | undefined) => !text ? '' : text + '\n'
-const formatChanges = (
-    items: ChangeLogItem[], formattingInfo: ReleaseNotesFormattingInfo, pad: number = 0,
+
+export const formatVersionChanges = (
+    versionSummary: string | undefined,
+    items: ChangeLogItem[],
+    formattingInfo: ReleaseNotesFormattingInfo,
+    pad: number = 0,
 ): string => {
     type Grouped = { [group: string]: ChangeLogItem[] }
     const grouped = items
@@ -43,12 +47,13 @@ const formatChanges = (
             return acc
         }, {})
 
-    return Object.keys(grouped)
+    return paragraph(versionSummary) + Object.keys(grouped)
         .map(group => {
             const formattedGroup = grouped[group]
                 .map(change => {
                     const nested = change.children
-                        ? '\n' + formatChanges(change.children, formattingInfo, pad + 2)
+                        ? '\n' + formatVersionChanges(
+                            versionSummary, change.children, formattingInfo, pad + 2)
                         : ''
                     let formattedItem = padLeft(
                         `${change.kind === 'list-item'
@@ -74,7 +79,7 @@ const formatChanges = (
 const formatVersions = (versions: Version[], formattingInfo: ReleaseNotesFormattingInfo) => {
     return versions.map(version => (
         `${formatHeader(version.version, version.releaseDate, formattingInfo.versionsDepth, true)}
-${paragraph(version.summary)}${formatChanges(version.changeLogs, formattingInfo)}`
+${formatVersionChanges(version.summary, version.changeLogs, formattingInfo)}`
     )).join('\n')
 }
 
