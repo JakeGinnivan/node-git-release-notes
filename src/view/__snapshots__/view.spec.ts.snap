@@ -27,6 +27,12 @@ exports[`Can get changes between versions 1`] = `
 "
 `;
 
+exports[`Can get changes between versions 2`] = `
+"- Starting West changelog
+- Automatic changelog generation
+"
+`;
+
 exports[`Can get changes for a single version 1`] = `
 "- Change 1
 - Change 2

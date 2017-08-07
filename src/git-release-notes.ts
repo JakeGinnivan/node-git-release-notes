@@ -36,6 +36,10 @@ program
     .option('-f, --file <file>', 'The release notes file to read from, default CHANGELOG.md')
     .action((versionSpec: string, options: ViewOptions) => {
         view(options.file || 'CHANGELOG.md', versionSpec)
+        .then(result => {
+            // tslint:disable-next-line:no-console
+            console.log(result)
+        })
         .catch((err: string) => {
             console.error('Error occured: ' + err)
             process.exit(1)
