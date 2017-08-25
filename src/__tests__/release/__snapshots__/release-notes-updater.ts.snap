@@ -1,5 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Aggregates correctly 1`] = `
+"# Changelog
+
+## [v2.0.0] - <date>
+### to
+- Test function
+
+## [v1.0.0]
+- Old release"
+`;
+
 exports[`Can group change logs by type 1`] = `
 "# Changelog
 

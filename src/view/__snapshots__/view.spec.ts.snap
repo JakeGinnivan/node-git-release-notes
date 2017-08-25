@@ -10,6 +10,13 @@ exports[`Can get changes after a version 1`] = `
 "
 `;
 
+exports[`Can get changes after the latest 1`] = `
+"- Change 1
+- Change 2
+  - Change 2.1
+"
+`;
+
 exports[`Can get changes before a version 1`] = `
 "- Change 0
 - Change 1
@@ -27,15 +34,11 @@ exports[`Can get changes between versions 1`] = `
 "
 `;
 
-exports[`Can get changes between versions 2`] = `
-"- Starting West changelog
-- Automatic changelog generation
-"
-`;
-
 exports[`Can get changes for a single version 1`] = `
 "- Change 1
 - Change 2
   - Change 2.1
 "
 `;
+
+exports[`Can get changes for vNext 1`] = `""`;

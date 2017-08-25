@@ -74,3 +74,33 @@ it('Can get changes between versions', () => {
 
     expect(changes).toMatchSnapshot()
 })
+
+it('Can get changes after the latest', () => {
+    const changes = extractChanges('file.md', `# Changelog
+
+## v2.0.0
+- Change 1
+- Change 2
+  - Change 2.1
+
+## v1.0.0
+- Change 0
+`, '2.0.0...')
+
+    expect(changes).toMatchSnapshot()
+})
+
+it('Can get changes for vNext', () => {
+    const changes = extractChanges('file.md', `# Changelog
+
+## v2.0.0
+- Change 1
+- Change 2
+  - Change 2.1
+
+## v1.0.0
+- Change 0
+`, '[2.0.0]...')
+
+    expect(changes).toMatchSnapshot()
+})

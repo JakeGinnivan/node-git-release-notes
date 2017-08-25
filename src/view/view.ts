@@ -25,7 +25,8 @@ export const extractChanges = (filename: string, changelog: string, versionSpec:
 
     const parts = versionSpec.split('...')
     if (parts.length === 1) {
-        const version = releaseNotes.versions.find(v => v.version.includes(parts[0]))
+        const version = releaseNotes.versions.find(v =>
+            v.version.toLowerCase().includes(parts[0].toLowerCase()))
         if (!version) {
             // tslint:disable-next-line:no-string-throw
             throw `Cannot find version information for ${parts[0]}`
@@ -39,10 +40,16 @@ export const extractChanges = (filename: string, changelog: string, versionSpec:
     }
 
     if (parts.length === 2) {
+        let fromIsExclusive = false
         // We have a range, is it open ended?
         const range = {
-            from: parts[0],
-            to: parts[1],
+            from: parts[0].toLowerCase(),
+            to: parts[1].toLowerCase(),
+        }
+
+        if (range.from[0] === '[' && range.from[range.from.length - 1] === ']') {
+            fromIsExclusive = true
+            range.from = range.from.slice(0, range.from.length - 1)
         }
 
         let toFound = false
@@ -53,11 +60,14 @@ export const extractChanges = (filename: string, changelog: string, versionSpec:
             summaries: string[],
         }
         const allChanges = releaseNotes.versions.reduceRight<Acc>((acc, val) => {
-            if (range.to && val.version.includes(range.to)) {
+            if (range.to && val.version.toLowerCase().includes(range.to)) {
                 toFound = true
             }
-            if (!range.from || val.version.includes(range.from)) {
+            if (!range.from || val.version.toLowerCase().includes(range.from)) {
                 fromFound = true
+                if (fromIsExclusive) {
+                    return acc
+                }
             }
 
             if (fromFound && !toFound) {

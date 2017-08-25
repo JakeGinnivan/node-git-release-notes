@@ -151,3 +151,23 @@ it('Can parse already parsed doc', () => {
 `, 'v2.0.0'))
         .toMatchSnapshot()
 })
+
+it ('Aggregates correctly', () => {
+    const output = processFiles([{
+        filename: 'path/to/CHANGELOG.md',
+        releaseNotes: `# Changelog
+
+## vnext
+- Test function
+`,
+    }, {
+        filename: 'CHANGELOG.md',
+        releaseNotes: `# Changelog
+
+## [v1.0.0]
+- Old release
+`,
+    }], 'v2.0.0', { debug: true, aggregate: true })
+
+    expect(output[1].releaseNotes.replace(/\d+\/\d+\/\d+/, '<date>')).toMatchSnapshot()
+})
