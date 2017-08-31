@@ -100,7 +100,7 @@ it('Can get changes for vNext', () => {
 
 ## v1.0.0
 - Change 0
-`, '[2.0.0]...')
+`, '[v1.0.0]...')
 
     expect(changes).toMatchSnapshot()
 })

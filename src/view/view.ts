@@ -49,7 +49,7 @@ export const extractChanges = (filename: string, changelog: string, versionSpec:
 
         if (range.from[0] === '[' && range.from[range.from.length - 1] === ']') {
             fromIsExclusive = true
-            range.from = range.from.slice(0, range.from.length - 1)
+            range.from = range.from.slice(1, range.from.length - 1)
         }
 
         let toFound = false
