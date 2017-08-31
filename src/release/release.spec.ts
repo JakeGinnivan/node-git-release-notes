@@ -1,4 +1,4 @@
-import { processFiles } from '../../release/release'
+import { processFiles } from './release'
 
 const verifyChangelog = (changelog: string, version = 'v1.0.0') => {
     const output = processFiles([{
