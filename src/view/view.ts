@@ -41,6 +41,7 @@ export const extractChanges = (filename: string, changelog: string, versionSpec:
 
     if (parts.length === 2) {
         let fromIsExclusive = false
+        let toIsExclusive = false
         // We have a range, is it open ended?
         const range = {
             from: parts[0].toLowerCase(),
@@ -52,6 +53,11 @@ export const extractChanges = (filename: string, changelog: string, versionSpec:
             range.from = range.from.slice(1, range.from.length - 1)
         }
 
+        if (range.to[0] === '[' && range.to[range.to.length - 1] === ']') {
+            toIsExclusive = true
+            range.to = range.to.slice(1, range.to.length - 1)
+        }
+
         let toFound = false
         let fromFound = false
 
@@ -60,7 +66,7 @@ export const extractChanges = (filename: string, changelog: string, versionSpec:
             summaries: string[],
         }
         const allChanges = releaseNotes.versions.reduceRight<Acc>((acc, val) => {
-            if (range.to && val.version.toLowerCase().includes(range.to)) {
+            if (toIsExclusive && range.to && val.version.toLowerCase().includes(range.to)) {
                 toFound = true
             }
             if (!range.from || val.version.toLowerCase().includes(range.from)) {
@@ -73,6 +79,9 @@ export const extractChanges = (filename: string, changelog: string, versionSpec:
             if (fromFound && !toFound) {
                 acc.changes.push(...val.changeLogs)
                 if (val.summary) { acc.summaries.push(val.summary) }
+            }
+            if (!toIsExclusive && range.to && val.version.toLowerCase().includes(range.to)) {
+                toFound = true
             }
 
             return acc

@@ -48,7 +48,26 @@ it('Can get changes before a version', () => {
 
 ## v1.0.0
 - Change 0
-`, '...3.0.0')
+`, '...2.0.0')
+
+    expect(changes).toMatchSnapshot()
+})
+
+it('Can get changes before a version using exclusion', () => {
+    const changes = extractChanges('file.md', `# Changelog
+
+## v3.0.0
+- Change 3
+- Change 4
+
+## v2.0.0
+- Change 1
+- Change 2
+  - Change 2.1
+
+## v1.0.0
+- Change 0
+`, '...[3.0.0]')
 
     expect(changes).toMatchSnapshot()
 })
