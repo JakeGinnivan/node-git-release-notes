@@ -1,44 +1,43 @@
 {
-  "name": "release-preparer",
-  "version": "0.5.0",
-  "author": "Jake Ginnivan <jake@ginnivan.net>",
-  "license": "MIT",
-  "bin": {
-    "release-preparer": "index.js"
-  },
-  "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w",
-    "test": "jest"
-  },
-  "devDependencies": {
-    "@types/commander": "^2.9.0",
-    "@types/fs-extra": "^3.0.2",
-    "@types/glob": "^5.0.30",
-    "@types/jest": "^19.2.3",
-    "@types/marked": "^0.0.28",
-    "@types/pino": "^3.0.1",
-    "jest": "^20.0.4",
-    "ts-jest": "^20.0.4",
-    "tslint": "^5.5.0",
-    "typescript": "^2.4.2"
-  },
-  "dependencies": {
-    "commander": "^2.9.0",
-    "fs-extra": "^3.0.1",
-    "glob": "^7.1.2",
-    "marked": "^0.3.6",
-    "pino": "^4.7.1"
-  },
-  "jest": {
-    "transform": {
-      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    "name": "release-preparer",
+    "version": "0.5.0",
+    "author": "Jake Ginnivan <jake@ginnivan.net>",
+    "license": "MIT",
+    "bin": {
+        "release-preparer": "index.js"
     },
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ]
-  }
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc -w",
+        "test": "jest",
+        "lint:prettier":
+            "prettier --single-quote=true --tab-width=4 --trailing-comma=all --use-tabs=false --print-width=100 --no-semi --write \"./src/**/*.ts\" \"./src/**/*.tsx\""
+    },
+    "devDependencies": {
+        "@types/commander": "^2.9.0",
+        "@types/fs-extra": "^3.0.2",
+        "@types/glob": "^5.0.30",
+        "@types/jest": "^19.2.3",
+        "@types/marked": "^0.0.28",
+        "@types/pino": "^3.0.1",
+        "jest": "^20.0.4",
+        "prettier": "^1.8.2",
+        "ts-jest": "^20.0.4",
+        "tslint": "^5.5.0",
+        "typescript": "^2.4.2"
+    },
+    "dependencies": {
+        "commander": "^2.9.0",
+        "fs-extra": "^3.0.1",
+        "glob": "^7.1.2",
+        "marked": "^0.3.6",
+        "pino": "^4.7.1"
+    },
+    "jest": {
+        "transform": {
+            ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+        },
+        "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx)$",
+        "moduleFileExtensions": ["ts", "tsx", "js"]
+    }
 }

@@ -5,7 +5,9 @@ import { ChangeLogItem, ReleaseNotes } from './model'
 export type ReadOptions = { debug: boolean }
 
 export const fromMarkdown = (
-    markdown: string, filename: string, options?: ReadOptions,
+    markdown: string,
+    filename: string,
+    options?: ReadOptions,
 ): ReleaseNotes => {
     const tokens = parse(markdown)
 
@@ -18,7 +20,9 @@ export const fromMarkdown = (
 
 const parseHeader = (header: string) => {
     const match = /\[?(.*?)\]?(?: - (\d+\/\d+\/\d+))?$/.exec(header)
-    if (!match) { return { version: header, releaseDate: undefined } }
+    if (!match) {
+        return { version: header, releaseDate: undefined }
+    }
     return {
         version: match[1],
         releaseDate: match[2],
@@ -30,7 +34,7 @@ const tokensToReleaseNotes = (tokens: Token[], filename: string, options: ReadOp
     if (title.type !== 'heading') {
         let error = `Expected first line to be a heading in ${filename}`
         if (options.debug) {
-            error += '\n\nAST:\n', JSON.stringify(tokens)
+            ;(error += '\n\nAST:\n'), JSON.stringify(tokens)
         }
         throw error
     }
@@ -41,7 +45,8 @@ const tokensToReleaseNotes = (tokens: Token[], filename: string, options: ReadOp
     let token: Token | undefined
 
     // tslint:disable-next-line:curly
-    token = tokens.shift(); if (!token) return releaseNotes
+    token = tokens.shift()
+    if (!token) return releaseNotes
     while (token.type === 'paragraph' || token.type === 'text' || token.type === 'space') {
         const additionalLineBreak = token.type === 'paragraph' ? '\n' : ''
         releaseNotes.summary = releaseNotes.summary
@@ -49,14 +54,15 @@ const tokensToReleaseNotes = (tokens: Token[], filename: string, options: ReadOp
             : `${additionalLineBreak}${token.text}`
 
         // tslint:disable-next-line:curly
-        token = tokens.shift(); if (!token) return releaseNotes
+        token = tokens.shift()
+        if (!token) return releaseNotes
     }
 
     // Now we have title and summary parsed, next token should be a heading
     if (token.type !== 'heading') {
         let error = `Expecting a heading for the version, found ${token.type} in ${filename}`
         if (options.debug) {
-            error += '\n\nAST:\n', JSON.stringify(tokens)
+            ;(error += '\n\nAST:\n'), JSON.stringify(tokens)
         }
         throw error
     }
@@ -68,28 +74,31 @@ const tokensToReleaseNotes = (tokens: Token[], filename: string, options: ReadOp
         versionsDepth,
     }
     let header = parseHeader(token.text)
-    const groupedTokens = tokens.reduce((agg, v) => {
-        if (v.type === 'heading' && v.depth === versionsDepth) {
-            header = parseHeader(v.text)
-            // Hit the next version, so start collecting tokens against it
-            agg.push({ version: header.version, releaseDate: header.releaseDate, tokens: [] })
-        } else {
-            // Add the token to the last version
-            agg[agg.length - 1].tokens.push(v)
-        }
+    const groupedTokens = tokens.reduce(
+        (agg, v) => {
+            if (v.type === 'heading' && v.depth === versionsDepth) {
+                header = parseHeader(v.text)
+                // Hit the next version, so start collecting tokens against it
+                agg.push({ version: header.version, releaseDate: header.releaseDate, tokens: [] })
+            } else {
+                // Add the token to the last version
+                agg[agg.length - 1].tokens.push(v)
+            }
 
-        return agg
-    }, [{ version: header.version, releaseDate: header.releaseDate, tokens: [] as Token[] }])
+            return agg
+        },
+        [{ version: header.version, releaseDate: header.releaseDate, tokens: [] as Token[] }],
+    )
 
     releaseNotes.versions = groupedTokens.map(v => {
         // Check to see if the first token is a paragraph, which would be a version summary
         let summary: string | undefined
         let peekedToken = v.tokens[0]
-        while (peekedToken
-            && (peekedToken.type === 'paragraph'
-                || peekedToken.type === 'text'
-                || peekedToken.type === 'space'
-            )
+        while (
+            peekedToken &&
+            (peekedToken.type === 'paragraph' ||
+                peekedToken.type === 'text' ||
+                peekedToken.type === 'space')
         ) {
             const additionalLineBreak = peekedToken.type === 'paragraph' ? '\n' : ''
             summary = summary
@@ -116,15 +125,18 @@ export interface ChangeLogAccumulator {
 }
 
 const parseChangeLogVersion = (
-    tokens: Token[], filename: string, version: string, options: ReadOptions,
+    tokens: Token[],
+    filename: string,
+    version: string,
+    options: ReadOptions,
 ): ChangeLogItem[] => {
     const parents: ChangeLogAccumulator[] = []
     let isLooseListItem = false
     let isInList = false
     let currentGroup: string | undefined
 
-    return tokens
-        .reduce<ChangeLogAccumulator>((acc, token) => {
+    return tokens.reduce<ChangeLogAccumulator>(
+        (acc, token) => {
             if (token.type === 'heading') {
                 currentGroup = token.text
             }
@@ -150,7 +162,9 @@ const parseChangeLogVersion = (
             if (token.type === 'list_item_start' || token.type === 'loose_item_start') {
                 if (acc.lastToken !== 'list_start' && acc.lastToken !== 'list_item_end') {
                     // tslint:disable-next-line:max-line-length
-                    let msg = `Not expecting list_item_start after ${acc.lastToken} in ${filename} -> ${version}`
+                    let msg = `Not expecting list_item_start after ${acc.lastToken} in ${
+                        filename
+                    } -> ${version}`
                     if (options.debug) {
                         msg += '\n\nAST:\n' + JSON.stringify(tokens)
                     }
@@ -211,6 +225,7 @@ const parseChangeLogVersion = (
             }
 
             return acc
-        }, { lastToken: '', items: [] })
-    .items
+        },
+        { lastToken: '', items: [] },
+    ).items
 }

@@ -6,7 +6,7 @@ import { toMarkdown } from '../release-notes/write'
 import { ReleaseNotes } from '../release-notes/model'
 
 export type ReleaseOptions = ReadOptions & {
-    aggregate: boolean,
+    aggregate: boolean
 }
 
 export const release = async (fileGlob: string, version: string, options: ReleaseOptions) => {
@@ -16,10 +16,12 @@ export const release = async (fileGlob: string, version: string, options: Releas
         ignore: 'node_modules/**',
     })
 
-    const changelogFiles = await Promise.all(files.map<Promise<ChangeLogFile>>(async file => ({
-        filename: file,
-        releaseNotes: (await fs.readFile(file)).toString(),
-    })))
+    const changelogFiles = await Promise.all(
+        files.map<Promise<ChangeLogFile>>(async file => ({
+            filename: file,
+            releaseNotes: (await fs.readFile(file)).toString(),
+        })),
+    )
 
     const processedFiles = processFiles(changelogFiles, version, options)
 
@@ -29,30 +31,31 @@ export const release = async (fileGlob: string, version: string, options: Releas
 }
 
 export type ChangeLogFile = {
-    filename: string,
-    releaseNotes: string,
+    filename: string
+    releaseNotes: string
 }
-function notUndefined<T>(val: T | undefined): val is T { return val !== undefined }
-export const processFiles = (
-    files: ChangeLogFile[], version: string, options: ReleaseOptions,
-) => {
+function notUndefined<T>(val: T | undefined): val is T {
+    return val !== undefined
+}
+export const processFiles = (files: ChangeLogFile[], version: string, options: ReleaseOptions) => {
     // tslint:disable-next-line:no-console
     console.log('Processing: \n', files.map(f => f.filename).join('\n'))
     const errors: string[] = []
-    const releaseNotesFiles = files.map(file => {
-        try {
-            const releaseNotes = fromMarkdown(file.releaseNotes, file.filename, options)
+    const releaseNotesFiles = files
+        .map(file => {
+            try {
+                const releaseNotes = fromMarkdown(file.releaseNotes, file.filename, options)
 
-            return {
-                filename: file.filename,
-                releaseNotes,
+                return {
+                    filename: file.filename,
+                    releaseNotes,
+                }
+            } catch (err) {
+                errors.push(err)
+                return
             }
-        } catch (err) {
-            errors.push(err)
-            return
-        }
-    })
-    .filter(notUndefined)
+        })
+        .filter(notUndefined)
     if (errors.length > 0) {
         throw errors.join('\n')
     }
@@ -93,11 +96,10 @@ export const processFiles = (
         }
     }
 
-    const results: ChangeLogFile[] = releaseNotesFiles
-            .map(file => ({
-                filename: file.filename,
-                releaseNotes: toMarkdown(file.releaseNotes),
-            }))
+    const results: ChangeLogFile[] = releaseNotesFiles.map(file => ({
+        filename: file.filename,
+        releaseNotes: toMarkdown(file.releaseNotes),
+    }))
 
     if (options.aggregate) {
         updateRelease(rootFile.releaseNotes, version)
