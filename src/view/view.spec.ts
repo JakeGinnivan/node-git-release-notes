@@ -1,7 +1,9 @@
 import { extractChanges } from './view'
 
 it('Can get changes for a single version', () => {
-    const changes = extractChanges('file.md', `# Changelog
+    const changes = extractChanges(
+        'file.md',
+        `# Changelog
 
 ## v2.0.0
 - Change 1
@@ -10,13 +12,17 @@ it('Can get changes for a single version', () => {
 
 ## v1.0.0
 - Change 0
-`, '2.0.0')
+`,
+        '2.0.0',
+    )
 
     expect(changes).toMatchSnapshot()
 })
 
 it('Can get changes after a version', () => {
-    const changes = extractChanges('file.md', `# Changelog
+    const changes = extractChanges(
+        'file.md',
+        `# Changelog
 
 ## v3.0.0
 - Change 3
@@ -29,13 +35,17 @@ it('Can get changes after a version', () => {
 
 ## v1.0.0
 - Change 0
-`, '2.0.0...')
+`,
+        '2.0.0...',
+    )
 
     expect(changes).toMatchSnapshot()
 })
 
 it('Can get changes before a version', () => {
-    const changes = extractChanges('file.md', `# Changelog
+    const changes = extractChanges(
+        'file.md',
+        `# Changelog
 
 ## v3.0.0
 - Change 3
@@ -48,13 +58,17 @@ it('Can get changes before a version', () => {
 
 ## v1.0.0
 - Change 0
-`, '...2.0.0')
+`,
+        '...2.0.0',
+    )
 
     expect(changes).toMatchSnapshot()
 })
 
 it('Can get changes before a version using exclusion', () => {
-    const changes = extractChanges('file.md', `# Changelog
+    const changes = extractChanges(
+        'file.md',
+        `# Changelog
 
 ## v3.0.0
 - Change 3
@@ -67,13 +81,17 @@ it('Can get changes before a version using exclusion', () => {
 
 ## v1.0.0
 - Change 0
-`, '...[3.0.0]')
+`,
+        '...[3.0.0]',
+    )
 
     expect(changes).toMatchSnapshot()
 })
 
 it('Can get changes between versions', () => {
-    const changes = extractChanges('file.md', `# Changelog
+    const changes = extractChanges(
+        'file.md',
+        `# Changelog
 
 ## v3.0.0
 - Change 3
@@ -89,13 +107,17 @@ it('Can get changes between versions', () => {
 
 ## v1.0.0
 - Change 0
-`, '2.0.0...3.0.0')
+`,
+        '2.0.0...3.0.0',
+    )
 
     expect(changes).toMatchSnapshot()
 })
 
 it('Can get changes after the latest', () => {
-    const changes = extractChanges('file.md', `# Changelog
+    const changes = extractChanges(
+        'file.md',
+        `# Changelog
 
 ## v2.0.0
 - Change 1
@@ -104,13 +126,17 @@ it('Can get changes after the latest', () => {
 
 ## v1.0.0
 - Change 0
-`, '2.0.0...')
+`,
+        '2.0.0...',
+    )
 
     expect(changes).toMatchSnapshot()
 })
 
 it('Can get changes for vNext', () => {
-    const changes = extractChanges('file.md', `# Changelog
+    const changes = extractChanges(
+        'file.md',
+        `# Changelog
 
 ## v2.0.0
 - Change 1
@@ -119,7 +145,9 @@ it('Can get changes for vNext', () => {
 
 ## v1.0.0
 - Change 0
-`, '[v1.0.0]...')
+`,
+        '[v1.0.0]...',
+    )
 
     expect(changes).toMatchSnapshot()
 })

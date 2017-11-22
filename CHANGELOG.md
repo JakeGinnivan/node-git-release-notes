@@ -1,9 +1,12 @@
 # Changelog
+
 Changelog summary
 
 ## vNext
-The next release
- - Something
+
+* `./yarn.lock`
+  * use yarn rather than private nexus registry
 
 ## v0.1.0
- - Initial release
+
+* Initial release

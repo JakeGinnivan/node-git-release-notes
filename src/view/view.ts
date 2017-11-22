@@ -26,7 +26,8 @@ export const extractChanges = (filename: string, changelog: string, versionSpec:
     const parts = versionSpec.split('...')
     if (parts.length === 1) {
         const version = releaseNotes.versions.find(v =>
-            v.version.toLowerCase().includes(parts[0].toLowerCase()))
+            v.version.toLowerCase().includes(parts[0].toLowerCase()),
+        )
         if (!version) {
             // tslint:disable-next-line:no-string-throw
             throw `Cannot find version information for ${parts[0]}`
@@ -62,30 +63,35 @@ export const extractChanges = (filename: string, changelog: string, versionSpec:
         let fromFound = false
 
         type Acc = {
-            changes: ChangeLogItem[],
-            summaries: string[],
+            changes: ChangeLogItem[]
+            summaries: string[]
         }
-        const allChanges = releaseNotes.versions.reduceRight<Acc>((acc, val) => {
-            if (toIsExclusive && range.to && val.version.toLowerCase().includes(range.to)) {
-                toFound = true
-            }
-            if (!range.from || val.version.toLowerCase().includes(range.from)) {
-                fromFound = true
-                if (fromIsExclusive) {
-                    return acc
+        const allChanges = releaseNotes.versions.reduceRight<Acc>(
+            (acc, val) => {
+                if (toIsExclusive && range.to && val.version.toLowerCase().includes(range.to)) {
+                    toFound = true
                 }
-            }
+                if (!range.from || val.version.toLowerCase().includes(range.from)) {
+                    fromFound = true
+                    if (fromIsExclusive) {
+                        return acc
+                    }
+                }
 
-            if (fromFound && !toFound) {
-                acc.changes.push(...val.changeLogs)
-                if (val.summary) { acc.summaries.push(val.summary) }
-            }
-            if (!toIsExclusive && range.to && val.version.toLowerCase().includes(range.to)) {
-                toFound = true
-            }
+                if (fromFound && !toFound) {
+                    acc.changes.push(...val.changeLogs)
+                    if (val.summary) {
+                        acc.summaries.push(val.summary)
+                    }
+                }
+                if (!toIsExclusive && range.to && val.version.toLowerCase().includes(range.to)) {
+                    toFound = true
+                }
 
-            return acc
-        }, { changes: [], summaries: [] })
+                return acc
+            },
+            { changes: [], summaries: [] },
+        )
 
         return formatVersionChanges(
             allChanges.summaries.join('\n'),

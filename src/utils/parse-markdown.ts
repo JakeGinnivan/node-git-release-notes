@@ -1,15 +1,19 @@
 import * as marked from 'marked'
 
 interface ListStart {
-    type: 'list_start',
+    type: 'list_start'
     ordered: boolean
 }
 interface ListEnd {
-    type: 'list_end',
+    type: 'list_end'
     ordered: boolean
 }
-interface ListItemStart { type: 'list_item_start' | 'loose_item_start' }
-interface ListItemEnd { type: 'list_item_end' }
+interface ListItemStart {
+    type: 'list_item_start' | 'loose_item_start'
+}
+interface ListItemEnd {
+    type: 'list_item_end'
+}
 interface Paragraph {
     type: 'paragraph'
     text: string
@@ -27,10 +31,16 @@ interface Heading {
     depth: number
     text: string
 }
-export type Token = Heading | Paragraph | Text | Space
-    | ListStart | ListEnd
-    | ListItemStart | ListItemEnd
+export type Token =
+    | Heading
+    | Paragraph
+    | Text
+    | Space
+    | ListStart
+    | ListEnd
+    | ListItemStart
+    | ListItemEnd
     | { type: 'unknown' }
 
 export default (fileContents: string) =>
-    marked.lexer(fileContents.toString()) as (Token[] & { links: {} })
+    marked.lexer(fileContents.toString()) as Token[] & { links: {} }

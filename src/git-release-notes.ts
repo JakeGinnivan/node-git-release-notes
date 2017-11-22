@@ -22,8 +22,7 @@ program
         release(options.file || '**/CHANGELOG.md', version, {
             debug: !!options.debug,
             aggregate: !!options.aggregate,
-        })
-        .catch((err: string) => {
+        }).catch((err: string) => {
             console.error('Error occured: ' + err)
             process.exit(1)
         })
@@ -32,18 +31,20 @@ program
 program
     .command('view <version spec>')
     // tslint:disable-next-line:max-line-length
-    .description('Prints the changes for a version or a range, ie <version>...<version> or ...<version> or <version>...')
+    .description(
+        'Prints the changes for a version or a range, ie <version>...<version> or ...<version> or <version>...',
+    )
     .option('-f, --file <file>', 'The release notes file to read from, default CHANGELOG.md')
     .action((versionSpec: string, options: ViewOptions) => {
         view(options.file || 'CHANGELOG.md', versionSpec)
-        .then(result => {
-            // tslint:disable-next-line:no-console
-            console.log(result)
-        })
-        .catch((err: string) => {
-            console.error('Error occured: ' + err)
-            process.exit(1)
-        })
+            .then(result => {
+                // tslint:disable-next-line:no-console
+                console.log(result)
+            })
+            .catch((err: string) => {
+                console.error('Error occured: ' + err)
+                process.exit(1)
+            })
     })
 
 program.parse(process.argv)
