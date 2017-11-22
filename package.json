@@ -10,8 +10,7 @@
         "build": "tsc",
         "watch": "tsc -w",
         "test": "jest",
-        "lint:prettier":
-            "prettier --single-quote=true --tab-width=4 --trailing-comma=all --use-tabs=false --print-width=100 --no-semi --write \"./src/**/*.ts\" \"./src/**/*.tsx\""
+        "lint:prettier": "prettier --single-quote=true --tab-width=4 --trailing-comma=all --use-tabs=false --print-width=100 --no-semi --write \"./src/**/*.ts\" \"./src/**/*.tsx\""
     },
     "devDependencies": {
         "@types/commander": "^2.9.0",
@@ -24,7 +23,7 @@
         "prettier": "^1.8.2",
         "ts-jest": "^20.0.4",
         "tslint": "^5.5.0",
-        "typescript": "^2.4.2"
+        "typescript": "^2.6.1"
     },
     "dependencies": {
         "commander": "^2.9.0",
@@ -38,6 +37,10 @@
             ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
         },
         "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx)$",
-        "moduleFileExtensions": ["ts", "tsx", "js"]
+        "moduleFileExtensions": [
+            "ts",
+            "tsx",
+            "js"
+        ]
     }
 }
